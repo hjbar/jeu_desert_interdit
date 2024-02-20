@@ -1,0 +1,304 @@
+﻿________________
+
+
+BARREIRO Hugo
+RIBEIRO Damien
+
+
+Programmation Objet et Génie Logiciel :
+Projet - Le Désert Interdit
+
+
+LDD2 IM1
+24/04/23
+
+
+________________
+
+
+Sommaire :
+
+
+I) Travail effectué et répartition
+
+
+II) Choix et Architecture
+
+
+III) Erreurs, problèmes et difficultés
+
+
+IV) Code emprunté
+
+
+V) Conclusion
+
+
+________________
+
+
+I) Travail effectué et répartition
+
+
+A) Travail effectué
+
+
+Nous avons traité et implémenté l’ensemble des parties 1, 2, 3 et 4 du projet. Nous avons également presque implémenté entièrement la partie 5.
+
+
+Les 6 rôles ont été réalisés : Archéologue, Alpiniste, Explorateur, Navigatrice et Porteuse d’eau et Météorologue.
+On gère les propriétés de la Navigatrice et de la Météorologue dans le Contrôleur (les autres dans le Modèle).
+
+
+Nous avons implémenté les équipements dans le modèle (sauf l’accélérateur).
+Néanmoins, nous ne les utilisons pas dans le jeu car nous n’avons pas eu le temps de réaliser les vues et les contrôleurs associés.
+
+
+Nous avons créé un tas de cartes pour les cartes tempêtes et les cartes équipements.
+
+
+B) Répartition
+
+
+Nous avons décidé de diviser le projet en 4 parties :
+
+
+* Le Modèle
+* Les Tests
+* Les Contrôleurs
+* Les Vues
+
+
+Ainsi, chaque membre du groupe s’est occupé de 2 parties.
+
+
+Hugo s’est principalement occupé du Modèle et des Tests et Damien s’est principalement occupé des Contrôleurs et des Vues.
+
+
+On a jugé cette répartition efficace et intelligente car les Vues et les Contrôleurs se complètent plutôt bien, de plus, le Modèle et les Tests vont, de fait, ensemble.
+
+
+C) Commandes
+
+
+Lorsque l’on lance le jeu, l’écran de sélection du nombre de personnage s’affiche.
+Une fois que l’on a déplacé le curseur sur le nombre de personnage souhaité, un timer de 5 secondes se lance.
+Si, le curseur n’a pas été déplacé dans ce laps de temps, on considère le choix validé, et on lance le jeu.
+Sinon, le timer est réinitialisé.
+
+
+Une fois la partie lancée, les commandes sont sous forme de boutons cliquables.
+
+
+Il y a que le déplacement d’un personnage et le dessablement d’une case qui sont sous une autre forme.
+Pour déplacer un personnage, il suffit de cliquer sur la case de destination.
+Si le déplacement est autorisé, alors le personnage est déplacé.
+Il en est de même pour l’action de dessabler.
+
+
+________________
+
+
+II) Choix et Architecture
+
+
+Nous avons réalisé un diagramme de classe détaillé grâce à Intellij afin de pouvoir mieux visualiser l’architecture du projet (cf diagramme.png à la racine du projet).
+
+
+Comme dit précédemment, nous avons décidé de diviser le projet en plusieurs parties, notamment : le Modèle, les Vues et les Contrôleurs (MVC).
+
+
+Les Contrôleurs gèrent les inputs de l’utilisateur et modifient l’état du Modèle.
+Puis les Vues affichent la nouvelle version du Modèle.
+De plus, les Vues et les Contrôleurs communiquent car les Contrôleurs (sous forme de boutons) doivent être affichés pour être utilisés (cliqués) par l’utilisateur.
+
+
+Pour le Modèle, nous avons une classe modèle qui est le centre du Modèle.
+C’est ici que l’on stocke le plateau, les personnages et les tas de cartes.
+C’est donc également depuis cette classe qu’on peut effectuer toutes les actions possibles sur le Modèle.
+
+
+Le plateau (qui est une classe) gère les différentes cases du désert et également le déplacement de l'œil de la tempête.
+
+
+Nous avons différentes classes pour les cases.
+Nous avons une classe principale Case qui gère la case basique (les cités).
+Puis nous avons des extends pour les différentes cases spéciales (Oasis, Tunnel, Oeil, etc…).
+
+
+Nous avons adopté une stratégie similaire pour les personnages.
+Nous avons une classe Personnage qui implémente toutes les actions de base d’un personnage du jeu.
+Puis, nous avons des extends pour chaque aventurier.
+
+
+(Remarque: la classe Personnage aurait pu être abstract car tous les personnages d’une partie sont des personnages spéciaux, il n’y a pas de personnage de base.
+Néanmoins, nous n’avons pas fait ce choix pour pouvoir créer des personnages tout simples dans les tests pour tester les fonctionnalités communes à tous les personnages.
+Pour les mêmes raisons, on a un constructeur dans modèle et plateau qui est uniquement utilisé pour les tests.
+De plus, les tests sur Personnage ont été écrits avant que l’on décide d'implémenter les différents personnages et nous n’avions plus assez de temps pour les refaire en intégralité).
+
+
+Enfin, pour le tas de cartes et les cartes on a adopté une stratégie un peu différente.
+On a pas des tas et des cartes de base auxquels on ajoute des extends pour différents tas et cartes.
+
+
+On a pas jugé cela nécessaire ici car les cartes tempêtes (resp. équipements) sont semblables et ne nécessitent pas une classe à part entière (idem pour les différents tas).
+
+
+Ainsi, on utilise un type énuméré pour différencier les tas et les cartes.
+Lorsque l’on créer un tas on précise le type de tas de l’on veut (idem pour les cartes).
+Puis, le constructeur initialise le tas avec le bon type de cartes. Pour les cartes, le constructeur initialise correctement les attributs selon le type de cartes, puis selon le type de la carte, lorsque l’on active la carte, l’action réalisée est bien la bonne.
+
+
+(Remarque: nous n’utilisons pas de tas pour les cartes aventuriers, nous avons jugé que cela ne servait à pas grand chose.
+On choisit le nombre de joueurs puis le constructeur du Modèle tire les aventuriers au hasard.)
+
+
+Enfin, pour gérer les déplacements des personnages nous avons créé un type énuméré Dir qui permet de symboliser les directions : centre, haut, bas, gauche et droite. Nous avons également créé une classe Coord qui nous permet de gérer la position des cases.
+(On a un enum spécial pour l'explorateur : DirExplo).
+
+
+Nous avons un dernier type énuméré : Pièce.
+Celui-là symbolise les 4 pièces de la machine à réunir et à assembler.
+
+
+Certains personnages ont très peu de code dans leur classe, cela s’explique par le fait que nous pensions qu’il était mauvais de coder leur action spéciale dans leur classe.
+C’est le cas notamment de la navigatrice et du météorologue.
+En effet, les actions de ces personnages n'influencent en rien leur propre attribut.
+Ainsi, leur fonctionnement est implémenté directement dans le contrôleur.
+La navigatrice à deux méthodes ne sont utilisées que lorsqu’elle est jouée. Et le météorologue a une vue et un contrôleur qui lui sont dédiés
+(parce que l’on ouvre une nouvelle fenêtre pour le météorologue).
+
+
+Dans la vue nous avons implémenté plusieurs zones Cliquables.
+Ce sont les cases du plateau, les cases représentant les personnages, le tas de cartes de la tempête.
+On utilise une classe abstraite ZoneCliquable (prise du TP1) qui implémente l’interface mouseListener.
+L’interface oblige la présence d’une fonction clicGauche et clicDroit que l’on utilise.
+Ces fonctions ont pour rôle d’appeler les fonctions du contrôleur qui vont modifier le modèle.
+On décide de quelle fonction du contrôleur on appelle à partir d’une variable de type state (qui est un type énuméré dans contrôleur).
+Par exemple, si le state (l’état) est de valeur FinTour alors il n’est plus possible de bouger ou dessabler des cases et de faire autre chose que de piocher des cartes tempêtes et de mettre fin au tour.
+
+
+Nous avons aussi utilisé des JButtons (de Swing) dans la vue qui permettent de communiquer directement depuis la vue au contrôleur.
+
+
+Nous avons aussi une vue avec laquelle l’utilisateur ne peut pas interagir qui indique le niveau de la tempête et le nombre total de tonnes de sable sur le plateau.
+
+
+Comme dit précédemment, nous avons fait une vue afin d’implémenter les actions spéciales de la météorologie.
+Cette vue est indépendante de la vue principale et on la cache (avec setVisible) lorsque l’utilisateur ne l'utilise pas.
+On utilise un nouveau contrôleur qui ne s’occupe que de cette vue afin de ne pas surcharger le fichier contrôleur.
+Cependant, ce contrôleur (ControleurMéteorologue) utilise le contrôleur (Contrôleur) afin de modifier le modèle et il modifie certains attributs du contrôleur.
+
+
+(Remarque : Nous avons utilisé une technique d’interaction différente pour la sélection du nombre de joueurs que pour le reste du jeu.
+En effet, dans le jeu il faut cliquer sur un bouton (ou case, ou pioche) pour valider une action.
+Dans la sélection du nombre de joueurs, nous avons testé une technique : le timer.
+Ainsi, lorsque l’on a choisi le nombre de joueurs, c’est un laps de temps qui valide notre choix et non pas un clic sur un bouton.)
+
+
+________________
+
+
+III) Erreurs, problèmes et difficultés
+
+
+A) Les règles
+
+
+Notre plus grand ennemi lors de ce projet était les règles.
+On a eu beaucoup de mal à comprendre les règles et les différentes nuances du jeu.
+Ainsi, parfois, cela nous a ralenti et/ou gêné lors de l’implémentation du jeu.
+
+
+Il arrivait que certains détails ne soient pas donnés et alors pas suffisamment détaillés pour être compris.
+
+
+Par exemple, nous n’avons pas implémenter l’échelle Tempête de Sable.
+Nous n’avons pas réussi à comprendre son fonctionnement.
+Ainsi, nous n’avons pas pu réaliser les différents niveaux de difficultés du jeu qui changent les premiers échelons.
+
+
+Ainsi, nous avons décidé d’adapter un peu à notre manière le nombre de cartes à piocher par tour et l’augmentation de la tempête à travers un niveau de difficulté unique.
+Nous avons donc dans notre version du jeu une difficulté accru lorsque l’on joue avec moins de joueurs.
+
+
+B) L’organisation
+
+
+Lorsque l’on réalise le projet, nous avons l’impression d’avoir besoin de tout, partout et tout le temps.
+Ainsi, il est difficile d’avoir un code organisé.
+
+
+L’idéal aurait été de pouvoir avoir une organisation à sens unique.
+C’est-à-dire de partir de modèle vers plateau vers case, de modèle vers personnage, de modèle vers cartes.
+Or, cela est impossible.
+On transite sans arrêt dans les deux sens.
+
+
+Par exemple, dans modèle on accède aux cartes, dans les cartes on accède au modèle.
+Dans le modèle on accède au plateau pour accéder aux cases, et dans le même temps le modèle accède aux personnages qui eux-mêmes accèdent aux cases.
+
+
+On aurait pu peut-être mieux organiser le code pour pas qu’on ait à naviguer entre toutes les classes dans tous les sens.
+
+
+Nous avons essayé, néanmoins, de limiter un maximum ce phénomène, bien qu’il reste encore un peu présent malheureusement.
+
+
+C) Vue et Contrôleur
+
+
+Nous avons rencontré plusieurs difficultés lors de l'implémentation de la vue et du contrôleur.
+
+
+Pour les vues, un bug que nous avons fréquemment rencontré est que certains JPanel (dans les vues des Cases et des personnages) que l’on affichait se décalaient de la position que nous leur attribuons lorsque l’on interagissait avec la vue.
+Puis à certain moment revenait à leur position d’origine.
+Nous avons réussi à régler ce problème pour la plupart des vues à l'aide de la méthode setPreferredSize(...).
+
+
+Cependant, notre affichage des pièces dans les cases ne fonctionne pas très bien.
+En effet, lorsque l’on interagit avec la vue, les pièces disparaissent et réapparaissent.
+Nous avons remarqué qu’elles ont tendances à disparaître lorsque nous appuyons sur nos boutons pour réaliser des commandes et qu’enlever du sable d’une case avec le clic droit à tendance à les faire réapparaître.
+Au-delà de cela, nous ne savons pas comment régler ce problème.
+
+
+Une autre difficulté rencontrée est le lien entre le contrôleur et la vue et notamment comment mettre à jour la vue sans modifier directement le modèle.
+Nous n’avons pas trouvé de moyen efficace de réaliser cela.
+
+
+Le seul moyen que l’on ait trouvé est d’utiliser des booléens et des variables énumérés ainsi que d'implémenter Observable dans contrôleur et Observer dans les vues.
+Ce qui laisse à désirer notamment parce qu’à chaque ajout il est nécessaire d’ajouter des attributs ou d’agrandir le type énuméré.
+En conséquence, nous n’avons pas pu mettre à jour la vue pour donner des indications au joueur sur les cases sur lesquelles il peut se déplacer par exemple.
+
+
+________________
+
+
+IV) Code emprunté
+
+
+Nous n'avons pas emprunté de code ailleurs, ni écrit de code à plusieurs.
+
+
+(A l’exception des classes Observable et Observer de Conway.java et de ZoneCliquable du premier TP)
+
+
+________________
+
+
+V) Conclusion
+
+
+Ce projet nous a permis d’appliquer en pratique la théorie apprise en cours tout au long du semestre.
+Notamment, les propriétés qu’offre Java à travers la programmation orientée objet comme l’héritage par exemple.
+
+
+Cela nous a, également, appris à appréhender un nouveau concept d’architecture : MVC.
+Modèle-Vue-Contrôleur nous a permis de réaliser assez facilement une interface graphique intéractive (également grâce aux bibliothèques de Java).
+
+
+Nous avons également progressé dans la mise en place de tests.
+L’utilisation de Junit a été facile et fort pratique.
+
+
+Enfin, “Le Désert Interdit” nous a aussi permis de développer notre sens de la recherche et de la compréhension, notamment pour trouver et comprendre diverses documentations afin de réaliser les parties du projet non-vu en cours et en TD/TP (Vue et Contrôleurs principalement).
